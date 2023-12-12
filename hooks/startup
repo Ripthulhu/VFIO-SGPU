@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Function to get primary dGPU (to check if it's Nvidia)
+get_primary_dgpu() {
+    lspci | grep VGA | grep -vE 'Intel|AMD' | cut -d " " -f 5
+}
+
+# Function to check drm modeset and unload Nvidia modules if needed
+unload_nvidia_modules() {
+    if grep -q "nvidia-drm modeset=1" /proc/cmdline; then
+        echo "Unloading Nvidia modules..."
+        MODULES=("nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm")
+        for mod in "${MODULES[@]}"; do
+            rmmod "$mod"
+        done
+    fi
+}
+
+# Function to stop the display manager
+stop_display_manager() {
+    DISPLAY_MANAGER=$(systemctl list-units --type=service | grep -E 'gdm|sddm|lightdm|xinit' | awk '{print $1}' | sed 's/.service//')
+    echo "Stopping display manager: $DISPLAY_MANAGER"
+    systemctl stop $DISPLAY_MANAGER
+}
+
+# Main execution starts here
+GPU=$(get_primary_dgpu)
+if [ "$GPU" == "NVIDIA" ]; then
+    unload_nvidia_modules
+fi
+stop_display_manager
+
