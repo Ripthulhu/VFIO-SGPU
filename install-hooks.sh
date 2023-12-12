@@ -1,9 +1,6 @@
 #!/bin/bash
 
-if test -e /etc/libvirt/ && ! test -e /etc/libvirt/hooks;
-then
-   mkdir -p /etc/libvirt/hooks;
-fi
+mkdir -p /etc/libvirt/hooks
 
 cp hooks/vfio-startup /usr/local/bin/vfio-startup
 cp hooks/vfio-teardown /usr/local/bin/vfio-teardown
