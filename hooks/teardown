@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Function to get primary dGPU (assumed to be Nvidia)
+get_primary_dgpu() {
+    lspci | grep VGA | grep -vE 'Intel|AMD' | cut -d " " -f 5
+}
+
+# Function to reload Nvidia modules
+reload_nvidia_modules() {
+    if grep -q "nvidia-drm modeset=1" /proc/cmdline; then
+        echo "Reloading Nvidia modules..."
+        MODULES=("nvidia_drm" "nvidia_uvm" "nvidia_modeset" "nvidia")
+        for mod in "${MODULES[@]}"; do
+            modprobe "$mod"
+        done
+    fi
+}
+
+# Function to start the display manager
+start_display_manager() {
+    DISPLAY_MANAGER=$(systemctl list-units --type=service | grep -E 'gdm|sddm|lightdm|xinit' | awk '{print $1}' | sed 's/.service//')
+    echo "Starting display manager: $DISPLAY_MANAGER"
+    systemctl start $DISPLAY_MANAGER
+}
+
+# Main execution starts here
+GPU=$(get_primary_dgpu)
+if [ "$GPU" == "NVIDIA" ]; then
+    reload_nvidia_modules
+fi
+start_display_manager
