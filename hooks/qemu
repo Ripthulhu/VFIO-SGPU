@@ -1,0 +1,16 @@
+#!/bin/bash
+
+OBJECT="$1"
+OPERATION="$2"
+
+if [[ $OBJECT == "windows" ]]; then
+	case "$OPERATION" in
+        	"prepare")
+                /usr/local/bin/vfio-startup 2>&1 | tee -a /var/log/libvirt/custom_hooks.log
+                ;;
+
+                "release") 
+                /usr/local/bin/vfio-teardown 2>&1 | tee -a /var/log/libvirt/custom_hooks.log
+                ;;
+	esac
+fi
