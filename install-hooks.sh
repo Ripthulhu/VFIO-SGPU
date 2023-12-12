@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mkdir -p /etc/libvirt/hooks &&
+mkdir -p /etc/libvirt/hooks
 
 cp hooks/vfio-startup /usr/local/bin/vfio-startup
 cp hooks/vfio-teardown /usr/local/bin/vfio-teardown
