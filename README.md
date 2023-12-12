@@ -7,6 +7,7 @@ You can find the wiki at https://wiki.archlinux.org/title/PCI_passthrough_via_OV
 AMDGPU users should add `video=efifb:off` to the kernel commandline
 
 Clone the repo and run 
+`cd VFIO-SGPU/`
 `sudo chmod +x install_hooks.sh`
 `sudo ./install_hooks.sh`
 
