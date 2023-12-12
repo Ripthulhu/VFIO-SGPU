@@ -7,6 +7,7 @@ Make sure you follow section 1 and 2 on the OVMF Arch wiki (distro agnostic) but
 You can find the wiki at https://wiki.archlinux.org/title/PCI_passthrough_via_OVMF#Prerequisites
 
 AMDGPU users should add `video=efifb:off` to the kernel commandline
+Nvidia users should add `nvidia-drm.modeset=1 nvidia-drm.fbdev=1`
 
 Clone the repo and run 
 `cd VFIO-SGPU/`
