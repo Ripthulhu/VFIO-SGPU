@@ -11,7 +11,7 @@ Nvidia users should be on driver version 545 or later and add `nvidia-drm.modese
 
 Clone the repo and run
 `cd VFIO-SGPU/`
-`sudo chmod +x install_hooks.sh`
-`sudo ./install_hooks.sh`
+`sudo chmod +x install-hooks.sh`
+`sudo ./install-hooks.sh`
 
 Create a VM with the name `windows`, add the GPU as a PCI device and boot the VM.
