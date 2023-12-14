@@ -5,11 +5,15 @@
 
 ## Introduction
 This guide is designed to assist beginners in setting up GPU passthrough on Linux systems using libvirt and virt-manager, specifically focusing on systems with only one GPU.
+I highly recommend joining the VFIO Discord (links are at the bottom) and reading through the #wiki-and-psa section of this server.
+Here you can find steps on how to acquire a ROM for Nvidia cards and steps on how to optimise the VM for maximum performance.
+You can also find a lot of useful info on the Arch OVMF Wiki page and I recommend reading it.
 
 ## Prerequisites
 - **System Compatibility**: Ensure your CPU supports IOMMU (Intel VT-d for Intel CPUs, AMD-Vi for AMD CPUs).
-- **GPU Compatibility**: Verify if your GPU supports UEFI and is compatible with passthrough.
+- **GPU Compatibility**: Verify if your GPU supports UEFI and is compatible with passthrough. Nvidia cards will require a ROM file and AMD Navi 14 or older need the `vendor-reset` module (link to the project at the bottom).
 - **Laptop Compatibility**: You need to be able to disable the iGPU in the BIOS.
+- **Distro Compatibility**: This script will only work on distro's that use systemd.
 
 ## Steps to Setup
 
@@ -51,4 +55,10 @@ This guide is designed to assist beginners in setting up GPU passthrough on Linu
 
 ## Additional Notes
 - **Handling Disadvantages**: Be aware that VM's are often not allowed and blocked in popular online games. Consider dual booting to play those games.
-- **Community Support**: For additional help, VM optimisation etc consider reaching out to places like r/vfio, the VFIO Discord server or the RisingPrismTV Discord server
+- **Community Support**: For additional help, VM optimisation etc consider reaching out to places like r/vfio, the VFIO Discord server or the RisingPrismTV Discord server.
+
+## Links and Resources
+- **VFIO Discord Server**: https://discord.gg/mteRzQkRW7
+- **RisingPrismTV Discord Server**: https://discord.gg/uU6MtsuaYE
+- **Arch OVMF Wiki**: https://wiki.archlinux.org/title/PCI_passthrough_via_OVMF
+- **Vendor-Reset**: https://github.com/gnif/vendor-reset
