@@ -10,7 +10,7 @@ get_primary_dgpu() {
 
 # Function to reload Nvidia modules
 reload_nvidia_modules() {
-    if grep -q "nvidia-drm modeset=1" /proc/cmdline; then
+    if grep -q "nvidia-drm.modeset=1" /proc/cmdline; then
         echo "Reloading Nvidia modules..."
         MODULES=("nvidia_drm" "nvidia_uvm" "nvidia_modeset" "nvidia")
         for mod in "${MODULES[@]}"; do
