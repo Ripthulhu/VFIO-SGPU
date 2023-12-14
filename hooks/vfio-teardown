@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# File to store the display manager's name
+DM_NAME_FILE="/tmp/display_manager_name.tmp
+
 # Function to get primary dGPU (assumed to be Nvidia)
 get_primary_dgpu() {
     lspci | grep VGA | grep -vE 'Intel|AMD' | cut -d " " -f 5
@@ -18,9 +21,14 @@ reload_nvidia_modules() {
 
 # Function to start the display manager
 start_display_manager() {
-    DISPLAY_MANAGER=$(systemctl list-units --type=service | grep -E 'gdm|sddm|lightdm|xinit' | awk '{print $1}' | sed 's/.service//')
-    echo "Starting display manager: $DISPLAY_MANAGER"
-    systemctl start $DISPLAY_MANAGER
+    if [ -f "$DM_NAME_FILE" ]; then
+        DISPLAY_MANAGER=$(<"$DM_NAME_FILE")
+        echo "Starting display manager: $DISPLAY_MANAGER"
+        systemctl start $DISPLAY_MANAGER
+        rm -f "$DM_NAME_FILE"
+    else
+        echo "No display manager name found to start."
+    fi
 }
 
 # Main execution starts here
