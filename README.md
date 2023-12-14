@@ -4,7 +4,7 @@
 # Single GPU Passthrough Guide on Linux
 
 ## Introduction
-This guide is designed to assist beginners in setting up a single GPU passthrough on Linux systems using libvirt and virt-manager, specifically focusing on systems with only one GPU.
+This guide is designed to assist beginners in setting up GPU passthrough on Linux systems using libvirt and virt-manager, specifically focusing on systems with only one GPU.
 
 ## Prerequisites
 - **System Compatibility**: Ensure your CPU supports IOMMU (Intel VT-d for Intel CPUs, AMD-Vi for AMD CPUs).
@@ -15,7 +15,7 @@ This guide is designed to assist beginners in setting up a single GPU passthroug
 
 ### 1. Add GPU specific options
 - **AMD GPU's**: Add `video=efifb:off` to your kernel parameters.
-- **Nvidia GPU's**: Nvidia users are recommended to be on driver version 545 or later and add `nvidia-drm.modeset=1 nvidia-drm.fbdev=1` to your kernel parameters.
+- **Nvidia GPU's**: Nvidia users are recommended to use driver version 545 or later and add `nvidia-drm.modeset=1 nvidia-drm.fbdev=1` to the kernel parameters.
 
 ### 2. Enable IOMMU in BIOS and Kernel
 - **BIOS Settings**: Enable AMD-Vi or Intel VT-d in your BIOS.
@@ -23,7 +23,7 @@ This guide is designed to assist beginners in setting up a single GPU passthroug
 - **Verify IOMMU Activation**: After rebooting, use the command `dmesg | grep IOMMU` to confirm IOMMU is enabled.
 
 ### 3. Check IOMMU Groups
-- **Script to List IOMMU Groups**: Use the provided `iommu-groups.sh` script to view IOMMU groups and attached devices. Ensure your GPU is in a separate group or consider using an ACS override patch if necessary. If this doesn't return anything, IOMMU is not working
+- **Script to List IOMMU Groups**: Use the provided `iommu-groups.sh` script to view IOMMU groups and attached devices. Ensure your GPU is in a separate group or consider using an ACS override patch if necessary. If this script doesn't return anything, IOMMU is not working
 
 ### 4. Install Required Tools
 - **Tool Installation**:
@@ -42,7 +42,7 @@ This guide is designed to assist beginners in setting up a single GPU passthroug
 - Add other PCI devices like the sound card and a USB controller
 
 ### 7. Libvirt Hooks
-- **Create and Configure Libvirt Hooks**: Clone the repo and run `cd VFIO-SGPU/ sudo chmod +x install-hooks.sh` `sudo ./install-hooks.sh`
+- **Create and Configure Libvirt Hooks**: Clone the repo and run `cd VFIO-SGPU/` `sudo chmod +x install-hooks.sh` `sudo ./install-hooks.sh`
 
 ### 8. Keyboard/Mouse Passthrough Options
 - **USB Controller Method**: Add the USB controller that your mouse and keyboard connect to as a PCI host device.
