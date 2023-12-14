@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # File to store the display manager's name
-DM_NAME_FILE="/tmp/display_manager_name.tmp
+DM_NAME_FILE="/tmp/display_manager_name.tmp"
 
 # Function to get primary dGPU (assumed to be Nvidia)
 get_primary_dgpu() {
