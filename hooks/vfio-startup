@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# File to store the display manager's name
+# File to store the display manager's service name
+DM_SERVICE_FILE="/etc/systemd/system/display-manager.service"
 DM_NAME_FILE="/tmp/display_manager_name.tmp"
 
 # Function to get primary dGPU (to check if it's Nvidia)
@@ -21,13 +22,13 @@ unload_nvidia_modules() {
 
 # Function to stop the display manager
 stop_display_manager() {
-    DISPLAY_MANAGER=$(systemctl list-units --type=service | grep -E 'gdm|sddm|lightdm|xinit' | awk '{print $1}' | sed 's/.service//')
-    if [ -n "$DISPLAY_MANAGER" ]; then
+    if [ -L "$DM_SERVICE_FILE" ]; then
+        DISPLAY_MANAGER=$(systemctl status display-manager | grep -oP 'Loaded:.*?\/\K(.*)(?=\.service)')
         echo "$DISPLAY_MANAGER" > "$DM_NAME_FILE"
         echo "Stopping display manager: $DISPLAY_MANAGER"
-        systemctl stop $DISPLAY_MANAGER
+        systemctl stop display-manager
     else
-        echo "No display manager found to stop."
+        echo "No display manager symlink found."
     fi
 }
 
@@ -37,4 +38,3 @@ if [ "$GPU" == "NVIDIA" ]; then
     unload_nvidia_modules
 fi
 stop_display_manager
-
