@@ -1,64 +1,57 @@
-# The Following Instructions Are Work in Progress
-
-
 # Single GPU Passthrough Guide on Linux
 
 ## Introduction
-This guide is designed to assist beginners in setting up GPU passthrough on Linux systems using libvirt and virt-manager, specifically focusing on systems with only one GPU.
-I highly recommend joining the VFIO Discord (links are at the bottom) and reading through the #wiki-and-psa section of this server.
-Here you can find steps on how to acquire a ROM for Nvidia cards and steps on how to optimise the VM for maximum performance.
-You can also find a lot of useful info on the Arch OVMF Wiki page and I recommend reading it.
+This guide assists beginners in setting up GPU passthrough on Linux systems using libvirt and virt-manager, focusing on systems with a single GPU. We highly recommend joining the VFIO Discord (links at the bottom) and reviewing the #wiki-and-psa section for valuable information. This includes steps to acquire a ROM for Nvidia cards and optimize the VM for maximum performance. The Arch OVMF Wiki page is another excellent resource.
 
 ## Prerequisites
-- **System Compatibility**: Ensure your CPU supports IOMMU (Intel VT-d for Intel CPUs, AMD-Vi for AMD CPUs).
-- **GPU Compatibility**: Verify if your GPU supports UEFI and is compatible with passthrough. Nvidia cards will require a ROM file and AMD Navi 14 or older need the `vendor-reset` module (link to the project at the bottom).
-- **Laptop Compatibility**: You need to be able to disable the iGPU in the BIOS.
-- **Distro Compatibility**: This script will only work on distro's that use systemd.
+- **System Compatibility**: Your CPU must support IOMMU (Intel VT-d for Intel CPUs, AMD-Vi for AMD CPUs).
+- **GPU Compatibility**: Ensure your GPU supports UEFI and is compatible with passthrough. Nvidia cards require a ROM file, and AMD Navi 14 or older GPUs need the `vendor-reset` module (link provided below).
+- **Laptop Compatibility**: Ability to disable the iGPU in the BIOS is essential.
+- **Distro Compatibility**: This script works only on distributions that use systemd.
 
-## Steps to Setup
+## Setup Steps
 
-### 1. Add GPU specific options
-- **AMD GPU's**: Add `video=efifb:off` to your kernel parameters.
-- **Nvidia GPU's**: Nvidia users are recommended to use driver version 545 or later and add `nvidia-drm.modeset=1 nvidia-drm.fbdev=1` to the kernel parameters.
+### 1. Add GPU Specific Options
+- **AMD GPUs**: Include `video=efifb:off` in your kernel parameters.
+- **Nvidia GPUs**: It's recommended to use driver version 545 or later and add `nvidia-drm.modeset=1 nvidia-drm.fbdev=1` to the kernel parameters.
 
 ### 2. Enable IOMMU in BIOS and Kernel
-- **BIOS Settings**: Enable AMD-Vi or Intel VT-d in your BIOS.
-- **Kernel Parameters**: Add `intel_iommu=on` for Intel CPUs to your kernel parameters.
-- **Verify IOMMU Activation**: After rebooting, use the command `dmesg | grep IOMMU` to confirm IOMMU is enabled.
+- **BIOS Settings**: Activate AMD-Vi or Intel VT-d in your BIOS.
+- **Kernel Parameters**: Add `intel_iommu=on` for Intel CPUs.
+- **Verify IOMMU Activation**: Use `dmesg | grep IOMMU` after rebooting to ensure IOMMU is enabled.
 
 ### 3. Check IOMMU Groups
-- **Script to List IOMMU Groups**: Use the provided `iommu-groups.sh` script to view IOMMU groups and attached devices. Ensure your GPU is in a separate group or consider using an ACS override patch if necessary. If this script doesn't return anything, IOMMU is not working
+- **IOMMU Groups Script**: Utilize the provided `iommu-groups.sh` script to view IOMMU groups and connected devices. Your GPU should be in a separate group, or you might need an ACS override patch. If the script returns nothing, IOMMU isn't functioning.
 
-### 4. Install Required Tools
-- **Tool Installation**:
-    - For Ubuntu: `apt install qemu-kvm qemu-utils libvirt-daemon-system libvirt-clients bridge-utils virt-manager ovmf`
-    - For Arch Linux: `pacman -S qemu libvirt edk2-ovmf virt-manager dnsmasq ebtables`
-    - For Fedora: `dnf install @virtualization`
-    - For Gentoo: `emerge -av qemu virt-manager libvirt ebtables dnsmasq`
-- **Enable Services**: Use `systemctl enable --now libvirtd` to enable and start the Libvirt service.
+### 4. Install Required Packages
+- **Packages Installation**:
+    - Ubuntu: `apt install qemu-kvm qemu-utils libvirt-daemon-system libvirt-clients bridge-utils virt-manager ovmf`
+    - Arch Linux: `pacman -S qemu libvirt edk2-ovmf virt-manager dnsmasq ebtables`
+    - Fedora: `dnf install @virtualization`
+    - Gentoo: `emerge -av qemu virt-manager libvirt ebtables dnsmasq`
+- **Enable Services**: Run `systemctl enable --now libvirtd` to enable and start the Libvirt service.
 
-### 5. Setup Guest OS
-- **Create VM with Virt-Manager**: Customize your VM before installation, ensuring you set the Chipset to Q35 and Firmware to UEFI.
+### 5. Set Up Guest OS
+- **VM Creation with Virt-Manager**: Customize your VM before installation, setting the Chipset to Q35 and Firmware to UEFI.
 
 ### 6. Attaching PCI Devices
-- Remove unnecessary devices like Channel Spice, Display Spice, and Video QXL from your VM.
+- Remove devices like Channel Spice, Display Spice, and Video QXL.
 - Add your GPU's VGA and HDMI Audio as PCI Host devices.
-- Add other PCI devices like the sound card and a USB controller
+- Add other PCI devices like the sound card and a USB controller.
 
 ### 7. Libvirt Hooks
-- **Create and Configure Libvirt Hooks**: Clone the repo and run `cd VFIO-SGPU/` `sudo chmod +x install-hooks.sh` `sudo ./install-hooks.sh`
+- **Libvirt Hooks Configuration**: Clone the repo and execute `cd VFIO-SGPU/`, `sudo chmod +x install-hooks.sh`, and `sudo ./install-hooks.sh`.
 
 ### 8. Keyboard/Mouse Passthrough Options
-- **USB Controller Method**: Add the USB controller that your mouse and keyboard connect to as a PCI host device.
-- **USB Host Device Method**: Add your keyboard and mouse as USB Host Devices. Note that this method uses emulated USB and doesn't work for all devices.
-- **Evdev Passthrough**: Modify the libvirt configuration of your VM to include your keyboard and mouse in the `/dev/input/by-id/`.
+- **USB Controller Method**: Add the USB controller for your mouse and keyboard as a PCI host device.
+- **USB Host Device Method**: Add your keyboard and mouse as USB Host Devices. Note: This method uses emulated USB and may not work with all devices.
+- **Evdev Passthrough**: Modify your VM's libvirt configuration to include your keyboard and mouse in `/dev/input/by-id/`.
 
 ## Additional Notes
-- **Handling Disadvantages**: Be aware that VM's are often not allowed and blocked in popular online games. Consider dual booting to play those games.
-- **Community Support**: For additional help, VM optimisation etc consider reaching out to places like r/vfio, the VFIO Discord server or the RisingPrismTV Discord server.
+- **Handling Disadvantages**: Be aware that VMs are often restricted or blocked in popular online games. Consider dual-booting for those games.
+- **Community Support**: For additional help, VM optimization, etc., consider reaching out to communities like r/vfio, the VFIO Discord server, or the RisingPrismTV Discord server.
 
 ## Links and Resources
 - **VFIO Discord Server**: https://discord.gg/mteRzQkRW7
 - **RisingPrismTV Discord Server**: https://discord.gg/uU6MtsuaYE
 - **Arch OVMF Wiki**: https://wiki.archlinux.org/title/PCI_passthrough_via_OVMF
-- **Vendor-Reset**: https://github.com/gnif/vendor-reset
