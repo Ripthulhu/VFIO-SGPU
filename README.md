@@ -55,3 +55,4 @@ This guide assists beginners in setting up GPU passthrough on Linux systems usin
 - **VFIO Discord Server**: https://discord.gg/mteRzQkRW7
 - **RisingPrismTV Discord Server**: https://discord.gg/uU6MtsuaYE
 - **Arch OVMF Wiki**: https://wiki.archlinux.org/title/PCI_passthrough_via_OVMF
+- **Vendor-Reset**: https://github.com/gnif/vendor-reset
