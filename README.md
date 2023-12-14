@@ -32,7 +32,7 @@ This guide assists beginners in setting up GPU passthrough on Linux systems usin
 - **Enable Services**: Run `systemctl enable --now libvirtd` to enable and start the Libvirt service.
 
 ### 5. Set Up Guest OS
-- **VM Creation with Virt-Manager**: Customize your VM before installation, setting the Chipset to Q35 and Firmware to UEFI.
+- **VM Creation with Virt-Manager**: Customize your VM before installation, setting the Chipset to Q35 and Firmware to UEFI. Make sure you name this VM `win10` or `win11` for the script to work.
 
 ### 6. Attaching PCI Devices
 - Remove devices like Channel Spice, Display Spice, and Video QXL.
