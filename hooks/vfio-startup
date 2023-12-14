@@ -11,7 +11,7 @@ get_primary_dgpu() {
 
 # Function to check drm modeset and unload Nvidia modules if needed
 unload_nvidia_modules() {
-    if grep -q "nvidia-drm modeset=1" /proc/cmdline; then
+    if grep -q "nvidia-drm.modeset=1" /proc/cmdline; then
         echo "Unloading Nvidia modules..."
         MODULES=("nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm")
         for mod in "${MODULES[@]}"; do
