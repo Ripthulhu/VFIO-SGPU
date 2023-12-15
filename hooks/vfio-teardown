@@ -24,7 +24,7 @@ start_display_manager() {
     if [ -f "$DM_NAME_FILE" ]; then
         DISPLAY_MANAGER=$(<"$DM_NAME_FILE")
         echo "Starting display manager: $DISPLAY_MANAGER"
-        systemctl start display-manager
+        systemctl start $DISPLAY_MANAGER
         rm -f "$DM_NAME_FILE"
     else
         echo "No display manager name found to start."
