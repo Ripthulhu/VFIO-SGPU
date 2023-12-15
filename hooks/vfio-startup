@@ -26,7 +26,7 @@ stop_display_manager() {
         DISPLAY_MANAGER=$(systemctl status display-manager | grep -oP 'Loaded:.*?\/\K(.*)(?=\.service)')
         echo "$DISPLAY_MANAGER" > "$DM_NAME_FILE"
         echo "Stopping display manager: $DISPLAY_MANAGER"
-        systemctl stop display-manager
+        systemctl stop $DISPLAY_MANAGER
     else
         echo "No display manager symlink found."
     fi
